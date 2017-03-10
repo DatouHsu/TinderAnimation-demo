@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DraggableView.h"
 
-@interface DraggableViewBackground : UIView
+@interface DraggableViewBackground : UIView <DraggableViewDelegate>
 
 @property (retain, nonatomic) NSArray *exampleCardLabel;
 @property (retain, nonatomic) NSMutableArray *allCards;

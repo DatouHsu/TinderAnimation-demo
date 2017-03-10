@@ -47,12 +47,12 @@ static const float CARD_WIDTH = 290;
     [menuButton setImage:[UIImage imageNamed:@"menuButton"] forState:UIControlStateNormal];
     messageButton = [[UIButton alloc]initWithFrame:CGRectMake(320, 34, 28, 18)];
     [messageButton setImage:[UIImage imageNamed:@"messageButton"] forState:UIControlStateNormal];
-    xButton = [[UIButton alloc]initWithFrame:CGRectMake(80, 485, 59, 59)];
+    xButton = [[UIButton alloc]initWithFrame:CGRectMake(80, 545, 59, 59)];
     [xButton setImage:[UIImage imageNamed:@"xButton"] forState:UIControlStateNormal];
-    [xButton addTarget:self action:@selector(swipeLeft) forControlEvents:UIControlEventTouchUpInside];
-    checkButton = [[UIButton alloc]initWithFrame:CGRectMake(220, 485, 59, 59)];
+    [xButton addTarget:self action:@selector(swipeToLeft) forControlEvents:UIControlEventTouchUpInside];
+    checkButton = [[UIButton alloc]initWithFrame:CGRectMake(220, 545, 59, 59)];
     [checkButton setImage:[UIImage imageNamed:@"checkButton"] forState:UIControlStateNormal];
-    [checkButton addTarget:self action:@selector(swipeRight) forControlEvents:UIControlEventTouchUpInside];
+    [checkButton addTarget:self action:@selector(swipeToRight) forControlEvents:UIControlEventTouchUpInside];
     
     [self addSubview:menuButton];
     [self addSubview:messageButton];
@@ -87,23 +87,23 @@ static const float CARD_WIDTH = 290;
 - (DraggableView *)createDraggableViewWithDataAtIndex: (NSInteger) index {
     
     DraggableView *draggableView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH)/2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
-    draggableView.backgroundColor = [UIColor redColor];
+    draggableView.backgroundColor = [UIColor lightGrayColor];
     draggableView.information.text = [_exampleCardLabel objectAtIndex:index];
-    
+    draggableView.delegate = self;
     return draggableView;
 }
 
-- (void)cardSwipe:(UIView *)card {
+- (void)cardSwiped:(UIView *)card {
     [loadedCards removeObjectAtIndex:0]; //card was swiped, so it's no longer a "loaded card"
     
-    if (cardsLoadedIndex < [allCards count]) { //%%% if we haven't reached the end of all cards, put another into the loaded cards
+    if (cardsLoadedIndex < [allCards count]) { //if we haven't reached the end of all cards, put another into the loaded cards
         [loadedCards addObject:[allCards objectAtIndex:cardsLoadedIndex]];
         cardsLoadedIndex++;
         [self insertSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]];
     }
 }
 
-- (void)swipeRight {
+- (void)swipeToRight {
     DraggableView *dragView = [loadedCards firstObject];
     dragView.overlayView.mode = overlayViewModeRight;
     [UIView animateWithDuration:0.2 animations:^{
@@ -113,7 +113,7 @@ static const float CARD_WIDTH = 290;
     [dragView rightClickAction];
 }
 
-- (void)swipeLeft {
+- (void)swipeToLeft {
     DraggableView *dragView = [loadedCards firstObject];
     dragView.overlayView.mode = overlayViewModeLeft;
     [UIView animateWithDuration:0.2 animations:^{

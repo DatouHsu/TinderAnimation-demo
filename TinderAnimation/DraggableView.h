@@ -9,7 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "overlayView.h"
 
+@protocol DraggableViewDelegate <NSObject>
+
+-(void)cardSwiped:(UIView *)card;
+
+@end
+
 @interface DraggableView : UIView
+
+@property (weak) id <DraggableViewDelegate> delegate;
 
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic) CGPoint originalPoint;

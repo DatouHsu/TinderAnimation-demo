@@ -21,6 +21,7 @@
     CGFloat yFromCenter;
 }
 
+@synthesize delegate;
 @synthesize panGestureRecognizer;
 @synthesize information;
 @synthesize overlayView;
@@ -29,6 +30,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setupView];
+        
+        information = [[UILabel alloc]initWithFrame:CGRectMake(0, 50, self.frame.size.width, 100)];
+        information.text = @"no info given";
+        [information setTextAlignment:NSTextAlignmentCenter];
+        information.textColor = [UIColor blackColor];
+        self.backgroundColor = [UIColor whiteColor];
         
         panGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(beingDragged:)];
         
@@ -93,7 +100,7 @@
         overlayView.mode = overlayViewModeLeft;
     }
     
-    overlayView.alpha = MIN(fabs(distance)/100, 0.4);
+    overlayView.alpha = MIN(fabsf(distance)/100, 0.4);
 }
 
 - (void)afterSwipeAction
@@ -120,7 +127,7 @@
                      }completion:^(BOOL complete){
                          [self removeFromSuperview];
                      }];
-    
+    [delegate cardSwiped:self];
     NSLog(@"YES");
 }
 
@@ -132,32 +139,33 @@
                      }completion:^(BOOL complete){
                          [self removeFromSuperview];
                      }];
-    
+    [delegate cardSwiped:self];
     NSLog(@"NO");
 }
 
 - (void)rightClickAction {
     CGPoint finishPoint = CGPointMake(600, self.center.y);
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.5
                      animations:^{
                          self.center = finishPoint;
                          self.transform = CGAffineTransformMakeRotation(1);
                      }completion:^(BOOL complete){
                          [self removeFromSuperview];
                      }];
+    [delegate cardSwiped:self];
     NSLog(@"YES");
 }
 
 - (void)leftClickAction {
     CGPoint finishPoint = CGPointMake(-600, self.center.y);
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.5
                      animations:^{
                          self.center = finishPoint;
                          self.transform = CGAffineTransformMakeRotation(-1);
                      }completion:^(BOOL complete){
                          [self removeFromSuperview];
                      }];
-    
+    [delegate cardSwiped:self];
     NSLog(@"NO");
 }
 
