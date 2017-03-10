@@ -16,4 +16,7 @@
 @property (nonatomic,strong) OverlayView* overlayView;
 @property (nonatomic,strong) UILabel* information;
 
+- (void)leftClickAction;
+- (void)rightClickAction;
+
 @end

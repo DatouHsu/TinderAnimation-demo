@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger , OverlayViewMode) {
+    overlayViewModeLeft,
+    overlayViewModeRight
+};
+
 @interface OverlayView : UIView
+
+@property (nonatomic) OverlayViewMode mode;
+@property (nonatomic, strong) UIImageView *imageView;
 
 @end

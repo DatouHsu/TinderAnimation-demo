@@ -13,7 +13,6 @@
 @property (retain, nonatomic) NSArray *exampleCardLabel;
 @property (retain, nonatomic) NSMutableArray *allCards;
 
-- (void)cardSwipeLeft:(UIView *)card;
-- (void)cardSwipeRight:(UIView *)card;
+- (void)cardSwipe:(UIView *)card;
 
 @end

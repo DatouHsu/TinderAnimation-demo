@@ -7,6 +7,7 @@
 //
 
 #import "DraggableViewBackground.h"
+#import "DraggableView.h"
 
 @implementation DraggableViewBackground {
     NSInteger cardsLoadedIndex;
@@ -60,23 +61,66 @@ static const float CARD_WIDTH = 290;
 }
 
 - (void)loadCards {
-    
+    if ([_exampleCardLabel count] > 0) {
+        NSInteger numLoadedCardsCap = (([_exampleCardLabel count] > MAX_BUFFER_SIZE)? MAX_BUFFER_SIZE : [_exampleCardLabel count]);
+        
+        for (int i = 0; i < [_exampleCardLabel count]; i++) {
+            DraggableView *newCard = [self createDraggableViewWithDataAtIndex:i];
+            [allCards addObject:newCard];
+            
+            if (i < numLoadedCardsCap) {
+                [loadedCards addObject:newCard];
+            }
+        }
+        
+        for (int i = 0; i < [loadedCards count]; i++) {
+            if (i > 0) {
+                [self insertSubview:[loadedCards objectAtIndex:i] belowSubview:[loadedCards objectAtIndex:i-1]];
+            } else {
+                [self addSubview:[loadedCards objectAtIndex:i]];
+            }
+            cardsLoadedIndex++;
+        }
+    }
 }
 
-- (void)cardSwipeLeft:(UIView *)card {
+- (DraggableView *)createDraggableViewWithDataAtIndex: (NSInteger) index {
     
+    DraggableView *draggableView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH)/2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
+    draggableView.backgroundColor = [UIColor redColor];
+    draggableView.information.text = [_exampleCardLabel objectAtIndex:index];
+    
+    return draggableView;
 }
 
-- (void)cardSwipeRight:(UIView *)card {
+- (void)cardSwipe:(UIView *)card {
+    [loadedCards removeObjectAtIndex:0]; //card was swiped, so it's no longer a "loaded card"
     
+    if (cardsLoadedIndex < [allCards count]) { //%%% if we haven't reached the end of all cards, put another into the loaded cards
+        [loadedCards addObject:[allCards objectAtIndex:cardsLoadedIndex]];
+        cardsLoadedIndex++;
+        [self insertSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]];
+    }
 }
 
 - (void)swipeRight {
+    DraggableView *dragView = [loadedCards firstObject];
+    dragView.overlayView.mode = overlayViewModeRight;
+    [UIView animateWithDuration:0.2 animations:^{
+        dragView.overlayView.alpha = 1;
+    }];
     
+    [dragView rightClickAction];
 }
 
 - (void)swipeLeft {
+    DraggableView *dragView = [loadedCards firstObject];
+    dragView.overlayView.mode = overlayViewModeLeft;
+    [UIView animateWithDuration:0.2 animations:^{
+        dragView.overlayView.alpha = 1;
+    }];
     
+    [dragView leftClickAction];
 }
 
 
